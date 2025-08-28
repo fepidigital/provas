@@ -47,6 +47,11 @@
         .hidden {
             display: none;
         }
+        #minhaImagem {
+            display: block;
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
         @media (max-width: 600px) {
             table, thead, tbody, th, td, tr {
                 display: block;
@@ -78,6 +83,7 @@
     </style>
 </head>
 <body>
+    <img id="minhaImagem" alt="Imagem">
     <h1>Avaliações Digitais do 1º Bimestre - Fepi Digital - 2025/02 <br>Busca de Avaliações</h1>
     <input type="text" id="searchInput" placeholder="Digite matrícula, nome, curso ou disciplina" onkeyup="searchTable()">
     <table id="dataTable" class="hidden">
@@ -99,9 +105,13 @@
     <div id="mensagem-erro" class="erro"></div>
 
     <script>
+        // Substitua 'SEU_DADO_BASE64_AQUI' pelo conteúdo Base64 da sua imagem PNG
+        const imagemBase64 = "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";
+        // Define o src da imagem com o formato Data URL
+        document.getElementById('minhaImagem').src = `data:image/png;base64,${imagemBase64}`;
+
         // URL do arquivo JSON com parâmetro para evitar cache
         const url = 'https://raw.githubusercontent.com/fepidigital/provas/refs/heads/main/dados.json'
-        //const url = 'https://raw.githubusercontent.com/Marciodeol/Calendario/main/dados.json?v=20250823';
         let dadosCompletos = []; // Armazenar dados carregados do JSON
 
         console.log('Fetching from:', url);
@@ -198,8 +208,6 @@
                 populateTable(filteredData);
             }
         }
-
-
 
         // Carregar os dados automaticamente ao iniciar a página
         window.onload = carregarDados;
