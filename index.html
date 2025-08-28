@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações Digitais do 1º Bimestre - Fepi Digital - 2025/02</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #e0e0e0;
+            font-size: 0.85em;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                font-size: 0.9em;
+            }
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliações Digitais do 1º Bimestre - Fepi Digital - 2025/02 <br>Busca de Avaliações</h1>
+    <input type="text" id="searchInput" placeholder="Digite matrícula, nome, curso ou disciplina" onkeyup="searchTable()">
+    <table id="dataTable" class="hidden">
+        <thead>
+            <tr>
+                <th>Matrícula</th>
+                <th>Nome</th>
+                <th>Disciplina</th>
+                <th>Curso</th>
+                <th>Sala</th>
+                <th>Data</th>
+                <th>Horário</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+
+    <div id="mensagem-erro" class="erro"></div>
+
+    <script>
+        // URL do arquivo JSON com parâmetro para evitar cache
+        const url = 'https://raw.githubusercontent.com/fepidigital/provas/refs/heads/main/dados.json?token=GHSAT0AAAAAADKCTLJGTD2TJGRLZDFKFF562FQLB7A'
+        //const url = 'https://raw.githubusercontent.com/Marciodeol/Calendario/main/dados.json?v=20250823';
+        let dadosCompletos = []; // Armazenar dados carregados do JSON
+
+        console.log('Fetching from:', url);
+
+        // Função para carregar e processar os dados
+        async function carregarDados() {
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json, text/plain'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+                }
+
+                // Obter o Content-Type
+                const contentType = response.headers.get('content-type');
+                console.log('Content-Type:', contentType);
+
+                // Tentar parsear como JSON
+                let dados;
+                if (contentType && (contentType.includes('application/json') || contentType.includes('text/plain'))) {
+                    dados = await response.json();
+                } else {
+                    throw new Error(`Formato de arquivo não suportado: ${contentType || 'desconhecido'}`);
+                }
+
+                // Verificar se os dados têm a estrutura esperada
+                if (!Array.isArray(dados) || dados.length === 0) {
+                    throw new Error('O arquivo JSON está vazio ou não é uma lista válida.');
+                }
+
+                // Corrigir dados e armazenar
+                dadosCompletos = dados.map(item => ({
+                    matricula: item.matricula || '',
+                    nome: item.nome || '',
+                    disciplina: item.disciplina || item.disciplLimparina || '', // Corrigir erro de digitação
+                    curso: item.curso || '',
+                    sala: item.sala || '',
+                    data: item.data || '',
+                    horario: item.horario || ''
+                }));
+
+                const camposEsperados = ['matricula', 'nome', 'disciplina', 'curso', 'sala', 'data', 'horario'];
+                const camposFaltando = dadosCompletos.some(item => 
+                    camposEsperados.some(campo => item[campo] === '')
+                );
+                if (camposFaltando) {
+                    console.warn('Alguns itens do JSON podem estar incompletos.');
+                }
+
+                // Não popular a tabela até que haja uma busca
+            } catch (erro) {
+                console.error('Erro detalhado:', erro);
+                const mensagemErro = document.getElementById('mensagem-erro');
+                mensagemErro.textContent = `Erro ao carregar os dados: ${erro.message}`;
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="7">Erro ao carregar os dados.</td></tr>';
+                document.getElementById('tabela-avaliacoes').classList.add('mostrar');
+            }
+        }
+        function populateTable(dataToShow) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            dataToShow.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td data-label="Matrícula">${item.matricula}</td>
+                    <td data-label="Nome">${item.nome}</td>
+                    <td data-label="Disciplina">${item.disciplina}</td>
+                    <td data-label="Curso">${item.curso}</td>
+                    <td data-label="Sala">${item.sala}</td>
+                    <td data-label="Data">${item.data}</td>
+                    <td data-label="Horário">${item.horario}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            document.getElementById('dataTable').classList.remove('hidden');
+        }
+
+        function searchTable() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const filteredData = dadosCompletos.filter(item => 
+                item.matricula.toLowerCase().includes(input) || 
+                item.nome.toLowerCase().includes(input) ||
+                item.disciplina.toLowerCase().includes(input) ||
+                item.curso.toLowerCase().includes(input)
+            );
+            if (input === '') {
+                document.getElementById('dataTable').classList.add('hidden');
+            } else {
+                populateTable(filteredData);
+            }
+        }
+
+
+
+        // Carregar os dados automaticamente ao iniciar a página
+        window.onload = carregarDados;
+    </script>
+</body>
+</html>
