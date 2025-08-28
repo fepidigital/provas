@@ -80,12 +80,14 @@
                 font-weight: bold;
             }
         }
+        #noResultsMessage { color: red; display: none; margin-top: 10px; }        
     </style>
 </head>
 <body>
     <img id="minhaImagem" alt="Imagem">
     <h1>Avaliações Digitais do 1º Bimestre - Fepi Digital - 2025/02 <br>Busca de Avaliações</h1>
     <input type="text" id="searchInput" placeholder="Digite matrícula, nome, curso ou disciplina" onkeyup="searchTable()">
+    <div id="noResultsMessage">Caso não encontre seu nome, procure a sala do Fepi Digital para informações!</div>
     <table id="dataTable" class="hidden">
         <thead>
             <tr>
@@ -196,6 +198,8 @@
 
         function searchTable() {
             const input = document.getElementById('searchInput').value.toLowerCase();
+            const noResultsMessage = document.getElementById('noResultsMessage');         
+
             const filteredData = dadosCompletos.filter(item => 
                 item.matricula.toLowerCase().includes(input) || 
                 item.nome.toLowerCase().includes(input) ||
@@ -204,8 +208,11 @@
             );
             if (input === '') {
                 document.getElementById('dataTable').classList.add('hidden');
+                noResultsMessage.style.display = 'none';
+              
             } else {
                 populateTable(filteredData);
+                noResultsMessage.style.display = 'block';    
             }
         }
 
