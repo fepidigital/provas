@@ -1,6 +1,6 @@
 [
     { "disciplina": "PRIMEIROS SOCORROS", "tutor": "ANNA GABRIELA", "curso": "EDUCAÇÃO FÍSICA", "data": "12/03/2026", "horario": "19H00 ÀS 19H50", "local": "SALA 629A", "atualizado": "27/02/2026" },
-    { "disciplina": "NUTRIÇÃO E DIETÉTICA", "tutor": "LILIANE", "curso": "ESTÉTICA", "data": "12/03/2026", "horario": "19H50 ÀS 20H40", "local": "SALA 410", "atualizado": "27/02/2026" },
+    { "disciplina": "NUTRIÇÃO E DIETÉTICA", "tutor": "LILIANE", "curso": "ESTÉTICA", "data": "12/03/2026", "horario": "19H00 ÀS 19H50", "local": "SALA 410", "atualizado": "27/02/2026" },
     { "disciplina": "TÓPICOS DE FORMAÇÃO PROFISSIONAL I", "tutor": "EGÍDIO", "curso": "DIREITO DIURNO", "data": "13/03/2026", "horario": "07H50 ÀS 09H30", "local": "SALA C do LTI", "atualizado": "27/02/2026" },
     { "disciplina": "BIOESTATÍSTICA E BIOINFORMÁTICA", "tutor": "ANNA GABRIELA", "curso": "MEDICINA VETERINÁRIA", "data": "13/03/2026", "horario": "08H40 ÀS 09H30", "local": "SALA 123", "atualizado": "27/02/2026" },
     { "disciplina": "METODOLOGIA CIENTÍFICA", "tutor": "RENAN", "curso": "PSICOLOGIA", "data": "13/03/2026", "horario": "9H50 ÀS 11H30", "local": "SALA 402", "atualizado": "27/02/2026" },
